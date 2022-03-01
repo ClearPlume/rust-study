@@ -2,6 +2,7 @@ fn main() {
     define_variable();
     mut_variable();
     deconstruction();
+    constant();
 }
 
 /// 变量的定义
@@ -25,6 +26,23 @@ fn define_variable() {
     // 将格式化字符串输出到标准控制台
     // “{}”是一个占位符，会自动替换为sum的值
     println!("(x + y) + (i + j) = {}", sum);
+
+    // Rust允许在同一作用域内使用相同名称声明新的变量
+    let chars = "abcdefghi";
+    println!("{}", chars); // abcdefghi
+
+    // 此处并非为chars绑定另一个对象，而是声明了一个新的变量，只是它的名字凑巧和之前的变量一样
+    // 后声明的chars将把之前的chars遮蔽掉
+    let chars = 9;
+    println!("{}", chars); // 9
+
+    {// inner
+        // 此处是重新声明了一个名为chars的变量
+        let chars = chars + 1;
+        println!("{}", chars); // 10
+    }
+    // 这里chars的值不会受到inner作用域内部操作的影响
+    println!("{}", chars); // 9
 }
 
 /// 变量的可变性
@@ -56,4 +74,18 @@ fn deconstruction() {
 
     b = true;
     assert_eq!(a, b);
+}
+
+/// 常量
+fn constant() {
+    // 常量必须在定义时就写明类型
+    const A: i32 = 9;
+
+    // 常量不可在同一作用域内重复定义
+    // const A: i32 = 8; // A value named `A` has already been defined in this block
+
+    {
+        // 只要不在同一作用域，即可使用一样的名称
+        const A: i32 = 90;
+    }
 }
