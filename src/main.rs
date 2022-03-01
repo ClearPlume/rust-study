@@ -1,6 +1,7 @@
 fn main() {
     define_variable();
     mut_variable();
+    deconstruction();
 }
 
 /// 变量的定义
@@ -43,4 +44,16 @@ fn mut_variable() {
     // 创建对象“6”，绑定给变量y
     y = 6;
     println!("The value of y is: {}", y);
+}
+
+/// 变量的解构
+fn deconstruction() {
+    // (true, false)是一个元组，将其解构为两个变量
+    // let (a, mut b): (bool, bool) = (true, false);
+    // (true, false)是一个元组，将其解构为两个变量，变量类型自动推断
+    let (a, mut b) = (true, false);
+    println!("a = {}, b = {}", a, b);
+
+    b = true;
+    assert_eq!(a, b);
 }
