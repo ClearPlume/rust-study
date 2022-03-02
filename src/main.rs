@@ -4,7 +4,7 @@ fn main() {
 }
 
 fn greet_world() {
-    // 变量的创建：其实应该是常量，默认情况下let创建的变量是不可变的
+    // 变量的创建，默认情况下let创建的变量是不可变的
     let southern_germany = "Grüß Gott!";
     let chinese = "世界，你好";
     let english = "World, hello";
