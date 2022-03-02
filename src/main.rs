@@ -31,7 +31,7 @@ fn define_variable() {
     let chars = "abcdefghi";
     println!("{}", chars); // abcdefghi
 
-    // 此处并非为chars绑定另一个对象，而是声明了一个新的变量，只是它的名字凑巧和之前的变量一样
+    // 此处并非为chars绑定另一个对象，而是声明了一个新的变量，只是它的名字凑巧也叫“chars”
     // 后声明的chars将把之前的chars遮蔽掉
     let chars = 9;
     println!("{}", chars); // 9
