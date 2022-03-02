@@ -6,3 +6,6 @@
 
 2. [variables](https://github.com/ClearPlume/rust-study/tree/variables)  
 介绍了Rust中变量与常量的定义和使用。
+
+3. [base-type](https://github.com/ClearPlume/rust-study/tree/base-type)  
+介绍了Rust中的基本类型。
