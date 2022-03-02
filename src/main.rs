@@ -76,6 +76,11 @@ fn unit() {
     let bool = boolean(); // 调用boolean方法，接收其返回值
 }
 
+/// 永不返回的函数
+fn never_return() -> ! {
+    unimplemented!()
+}
+
 /// 语句和表达式
 fn statement_expression() -> i32 {
     // Rust把执行后没有返回值且分号结束的代码行叫做“语句”，有返回值且没有分号结尾的代码行叫做“表达式”
