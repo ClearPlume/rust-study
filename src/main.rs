@@ -1,91 +1,83 @@
 fn main() {
-    define_variable();
-    mut_variable();
+    variable_define();
+    variable_mutable();
+    variable_effect_area();
+    variable_shadowing();
+    unused_variable();
     deconstruction();
-    constant();
+    deconstruction_define();
 }
 
-/// 变量的定义
-fn define_variable() {
-    // 创建一个数值对象“5”，将其所有者指定为x
-    // 没有显式指定x的类型，则编译器自动推断
-    let x = 5;
-
-    // 显式指定变量类型
-    let y: i32 = 5;
-
-    // 直接在变量值后指定类型
-    let i = 5i32;
-
-    // 也可在值与类型之间插入下划线以提高可读性
-    let j = 5_i32;
-
-    let sum = (x + y) + (i + j);
-
-    // “println!” 并非函数调用，它是一个宏
-    // 将格式化字符串输出到标准控制台
-    // “{}”是一个占位符，会自动替换为sum的值
-    println!("(x + y) + (i + j) = {}", sum);
-
-    // Rust允许在同一作用域内使用相同名称声明新的变量
-    let chars = "abcdefghi";
-    println!("{}", chars); // abcdefghi
-
-    // 此处并非为chars绑定另一个对象，而是声明了一个新的变量，只是它的名字凑巧也叫“chars”
-    // 后声明的chars将把之前的chars遮蔽掉
-    let chars = 9;
-    println!("{}", chars); // 9
-
-    {// inner
-        // 此处是重新声明了一个名为chars的变量
-        let chars = chars + 1;
-        println!("{}", chars); // 10
-    }
-    // 这里chars的值不会受到inner作用域内部操作的影响
-    println!("{}", chars); // 9
+/// 变量绑定
+fn variable_define() {
+    let x: i32 = 5; // 未初始化，但被使用
+    let _y: i32; // 未初始化，也未被使用。用前缀下划线可消除编译警告
+    println!("{} is equal to 5", x);
 }
 
 /// 变量的可变性
-fn mut_variable() {
-    let x = 5;
-    println!("The value of x is: {}", x);
-
-    // 直接用let绑定的变量不可再更改值
-    // x = 6; // error: cannot assign twice to immutable variable
-    // println!("The value of x is: {}", x);
-
-    // 如需在初次绑定之后修改变量值，则在变量绑定时用mut修饰
-    // mut是mutable的缩写
-    let mut y = 5;
-    println!("The value of y is: {}", y);
-
-    // 创建对象“6”，绑定给变量y
-    y = 6;
-    println!("The value of y is: {}", y);
+fn variable_mutable() {
+    let mut x = 1;
+    x += 2;
+    println!("{} = 3", x);
 }
 
-/// 变量的解构
-fn deconstruction() {
-    // (true, false)是一个元组，将其解构为两个变量
-    // let (a, mut b): (bool, bool) = (true, false);
-    // (true, false)是一个元组，将其解构为两个变量，变量类型自动推断
-    let (a, mut b) = (true, false);
-    println!("a = {}, b = {}", a, b);
-
-    b = true;
-    assert_eq!(a, b);
-}
-
-/// 常量
-fn constant() {
-    // 常量必须在定义时就写明类型
-    const A: i32 = 9;
-
-    // 常量不可在同一作用域内重复定义
-    // const A: i32 = 8; // A value named `A` has already been defined in this block
-
+/// 变量作用域
+fn variable_effect_area() {
+    let x: i32 = 10;
     {
-        // 只要不在同一作用域，即可使用一样的名称
-        const A: i32 = 90;
+        let y: i32 = 5;
+        println!("x 的值是 {}, y 的值是 {}", x, y);
     }
+    println!("x 的值是 {}", x);
+
+    let x = "hello";
+    println!("{}, world", x);
+}
+
+/// 变量遮蔽
+fn variable_shadowing() {
+    let x: i32 = 5;
+    {
+        let x = 12;
+        assert_eq!(x, 12);
+    }
+    assert_eq!(x, 5);
+    let x = 42;
+    println!("{}", x); // 输出 "42".
+
+    let mut x: i32 = 1;
+    x = 7;
+    // 遮蔽且再次绑定
+    let _x = x;
+    let _y = 4;
+    // 遮蔽
+    let _y = "I can also be bound to text!";
+}
+
+/// 未使用的变量
+fn unused_variable() {
+    // 使用变量
+    let x = 1;
+    println!("{}", x);
+
+    // 使用前缀下划线
+    let _y = 9;
+}
+
+/// 变量解构
+fn deconstruction() {
+    let (mut x, y) = (1, 2);
+    x += 2;
+    assert_eq!(x, 3);
+    assert_eq!(y, 2);
+}
+
+/// 解构式赋值
+fn deconstruction_define() {
+    let (x, y);
+    (x, _) = (3, 4);
+    [.., y] = [1, 2];
+    assert_eq!([x, y], [3, 2]);
+    println!("x = {}, y = {}", x, y)
 }
