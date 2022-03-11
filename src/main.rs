@@ -1,106 +1,214 @@
-use num::Complex;
+extern crate core;
 
-fn main() {}
+use std::mem::size_of_val;
+use std::ops::{Range, RangeInclusive};
 
-/// 数值类型
-fn numeric() {
-    // 整数分为有符号(i)和无符号(u)两种，类型定义的形式为：有无符号 + 类型大小
-    // 默认情况下，直接输入的数字会被当做i32处理
-    let a: i8 = 100;
-    let b: u8 = 200;
-    let c: i16 = 32530;
-    let d: u16 = 65530;
-    let e = 2147483647; // let e: i32 = 2147483647;
-    let f: u32 = 4147483620;
-    let g: i64 = 120256558845548465;
-    let h: u64 = 520256558845548465;
+fn main() {
+    integer();
+    float();
+    range();
+    computing();
+    char();
+    boolean();
+    unit();
+    statement_expression();
+    function();
+    diverging_function();
+}
 
-    // 浮点数按照长度分为两种，f32和f64
-    // 直接输入的浮点数默认为f64类型
-    let i: f32 = 6.2831852;
-    let j = 6.2831852547852694; // let j: f64 = 6.2831852547852694;
+/// 整数
+fn integer() {
+    let x: i32 = 5;
+    let mut y = 5;
+    println!("y = {}", y);
+    y = x;
+    println!("y = {}", y);
 
-    // Rust支持所有数值类型的五种基本运算：+ - * / %
-    let sum = 5 + 10;
-    let difference = 95.5 - 4.3;
-    let product = 4 * 30;
-    let quotient = 56.7 / 32.2;
-    let remainder = 43 % 5;
+    let _z = 10; // 这里 z 的类型是: i32
+
+    let _v: u16 = 38_u8 as u16; // 类型转换: as
+
+    let a = 5;
+    assert_eq!("i32".to_string(), type_of(&a));
+
+    assert_eq!(i8::MAX, 127);
+    assert_eq!(u8::MAX, 255);
+
+    let v1 = 247_u8 + 8_u8;
+    let v2 = i8::checked_add(117, 8).unwrap();
+    println!("v1, v2: {}, {}", v1, v2);
+
+    let v = 1_024 + 0xff + 0o77 + 0b1111_1111;
+    assert_eq!(v, 1597);
+}
+
+/// 获取传入参数的类型，返回类型的字符串形式，例如  "i8", "u8", "i32", "u32"
+fn type_of<T>(_: &T) -> String { format!("{}", std::any::type_name::<T>()) }
+
+/// 浮点数
+fn float() {
+    let _x = 1_000.000_1; // f64
+    let _y: f32 = 0.12; // f32
+    let _z = 0.01_f64; // f64
+
+    // assert!(0.1 + 0.2 == 0.3);
+    assert_eq!(0.1 + 0.2, 0.3_f32);
+    assert_eq!((0.1 + 0.2) as f32, 0.3);
 }
 
 /// 序列
 fn range() {
-    // Rust针对整数和字符类型提供了序列，使用“..”创建序列
-    for i in 1..5 {
-        println!("{}", i); // 1 2 3 4
+    let mut sum = 0;
+    for i in -3..2 {
+        sum += i
+    }
+    assert_eq!(sum, -5);
+
+    for c in 'a'..='z' {
+        println!("{}", c as i32);
     }
 
-    for i in 1..=5 {
-        println!("{}", i); // 1 2 3 4 5
-    }
-
-    for c in 'a'..='e' {
-        println!("{}", c); // a b c d e
-    }
+    assert_eq!((1..5), Range { start: 1, end: 5 });
+    assert_eq!((1..=5), RangeInclusive::new(1, 5));
 }
 
-/// 有理数和复数
-fn complex() {
-    // Rust并未直接在标准库中提供这两种数值类型，需引入num库
-    let a = Complex { re: 2.1, im: -1.2 };
-    let b = Complex::new(11.1, 22.2);
-    let result = a + b;
-    println!("{} + {}i", result.re, result.im);
+fn computing() {
+    assert_eq!(1 + 2, 3);
+
+    assert_eq!(1_i32 - 2, -1);
+    assert_eq!(1_i8 - 2, -1 as i8);
+
+    assert_eq!(3 * 50, 150);
+
+    assert_eq!(9.6 / 3.2, 3.0 as f32);
+
+    assert_eq!(24 % 5, 4);
+
+    assert!(true && false == false);
+    assert!(true || false == true);
+    assert_eq!(!true, false);
+
+    println!("0011 AND 0101 is {:04b}", 0b0011u32 & 0b0101);
+    println!("0011 OR 0101 is {:04b}", 0b0011u32 | 0b0101);
+    println!("0011 XOR 0101 is {:04b}", 0b0011u32 ^ 0b0101);
+    println!("1 << 5 is {}", 1u32 << 5);
+    println!("0x80 >> 2 is 0x{:x}", 0x80u32 >> 2);
 }
 
-/// 字符类型
-fn chars() {
-    // Rust中的字符采用Unicode编码，一个字符占用4个字节
-    let c = 'z';
-    let z = 'ℤ';
-    let g = '国';
-    let heart_eyed_cat = '😻';
+/// 字符
+fn char() {
+    let c1 = 'a';
+    assert_eq!(size_of_val(&c1), 4);
+    let c2 = '中';
+    assert_eq!(size_of_val(&c2), 4);
+    println!("Success!");
+
+    let c1 = '中';
+    print_char(c1);
 }
 
-/// 布尔类型
+fn print_char(c: char) { println!("{}", c) }
+
+/// 布尔
+//noinspection ALL
 fn boolean() {
-    // Rust中的布尔类型只有两个值：true false，占用1个字节
-    let a = true;
-    let b = false;
+    let _f: bool = false;
+    let t = true;
+    if t {
+        println!("Success!")
+    }
+
+    let f = true;
+    let t = true || false;
+    assert_eq!(t, f);
+    println!("Success!")
 }
 
 /// 单元类型
 fn unit() {
-    // Rust提供了一种专用于`函数默认返回值类型`的类型————单元类型。当函数没有明确指定返回值类型时，它的返回值类型就是单元类型。单元类型只有一个值：`()`，不占任何内存。
-    let unit = (); // 创建单元类型的字面量
-    let bool = boolean(); // 调用boolean方法，接收其返回值
+    let v = ();
+    assert_eq!(v, implicitly_ret_unit());
+    println!("Success!");
+
+    let unit: () = ();
+    assert_eq!(size_of_val(&unit), 0);
+    println!("Success!")
 }
 
-/// 永不返回的函数
-fn never_return() -> ! {
-    unimplemented!()
+fn implicitly_ret_unit() {
+    println!("I will return a ()")
 }
 
-/// 语句和表达式
-fn statement_expression() -> i32 {
-    // Rust把执行后没有返回值且分号结束的代码行叫做“语句”，有返回值且没有分号结尾的代码行叫做“表达式”
-    let a = 5; // 语句，它没有返回值
+/// 语句，表达式
+fn statement_expression() {
+    let v = {
+        let mut x = 1;
+        x = x + 2;
+        x
+    };
+    assert_eq!(v, 3);
+    let v = {
+        let mut x = 1;
+        x += 2
+    };
+    assert_eq!(v, ());
 
-    {
-        let a = 5;
-        a + 1
-    } // 这个代码块返回了表达式“a + 1”的结果，是一条表达式
-
-    {
-        let a = 9;
-    } // 这个代码块没有返回值，是一条语句
-
-    1 + 1 // 表达式，它不是分号结束，同时会返回一个值。同时它作为一个函数的结束，同时作为这个函数的“返回语句”
-    // return 1 + 1; // 语句，尽管它的作用是返回一个值，但它本身没有返回值且以分号结尾
+    let s = add(1, 2);
+    assert_eq!(s, 3);
 }
 
-/// 函数
+fn add(x: i32, y: i32) -> i32 {
+    x + y
+}
+
 fn function() {
-    // 函数的基本定义：
-    // fn function_name(param1: i32, param2: u32, .., paramN: &str) -> i32
+    let (x, y) = (1, 2);
+    let s = sum(x, y);
+    assert_eq!(s, 3);
+
+    print();
+
+    // never_return();
+
+    let b = false;
+    let _v = match b {
+        true => 1,
+        // 发散函数也可以用于 `match` 表达式，用于替代任何类型的值
+        false => {
+            println!("Success!");
+            panic!("we have no value for `false`, but we can panic")
+        }
+    };
+    println!("Excercise Failed if printing out this line!");
+}
+
+fn sum(x: i32, y: i32) -> i32 {
+    x + y
+}
+
+fn print() -> () {
+    println!("hello,world");
+}
+
+// fn never_return() -> ! {
+//     panic!("This function never return")
+// }
+
+fn diverging_function() {
+    println!("Success!");
+    get_option(5_u8);
+}
+
+fn get_option(tp: u8) -> Option<i32> {
+    match tp {
+        1 => {}
+        _ => {}
+    };
+    never_return_fn()
+}
+
+fn never_return_fn() -> ! {
+    // unimplemented!()
+    loop {}
+    panic!()
 }
